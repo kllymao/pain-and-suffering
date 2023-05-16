@@ -21,39 +21,45 @@ def prim(G, limits, len):
     num_touched = 1
     heap = []
     cost = 0
+
+    used = []
             
     for edge in G[1]:
         heapq.heappush(heap, edge)
     touched[1] = 1
-    limits[1] -= 1
+    prev = 1
 
     while(num_touched < len):
+        # print("Current heap 2", heap)
         pop = heapq.heappop(heap)
         print("\nCurrent node", pop)
         print("Current heap", heap)
         print("Current cost", cost)
         print("Have visited", touched)
         print("Limit counts", limits)
-        if touched[pop[1]] or not limits[pop[1]]:
+        # print(touched[pop[1]], not limits[pop[1]])
+        if touched[pop[1]] or not limits[pop[1]] or not limits[pop[2]]:
             continue
         num_touched += 1
         touched[pop[1]] = 1
         cost += pop[0]
         limits[pop[1]] -= 1
+        limits[pop[2]] -= 1
         for edge in G[pop[1]]:
             heapq.heappush(heap, edge)
+        prev = pop[1]
+        used.append(pop[3])
 
-
-    return cost
+    return sorted(used), cost
 
 
 def solve(N, M, limits, edges):
   
-  mst1 = prim(edges,limits,N)
+  used, cost = prim(edges,limits,N)
 
-#   print(mst1, mst2)
+  print(used, cost)
 
-  return mst1
+  return used
 
 
 def read_input():
@@ -64,8 +70,8 @@ def read_input():
     for i in range(M):
         u, v, c = [int(i) for i in input().split()]
         # print(u,v,c)
-        edges[u].append((c, v))
-        edges[v].append((c, u))
+        edges[u].append((c, v, u, i+1))
+        edges[v].append((c, u, v, i+1))
     print(N, M, limits, edges)
     
     return N, M, limits, edges
