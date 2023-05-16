@@ -17,10 +17,10 @@ def prim(G, limits, len):
 
     # print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
 
+    edges_used = 0
     touched = {}
     for key in G:
         touched[key] = 0
-    num_touched = 1
     heap = []
     cost = 0
     looking = False
@@ -31,7 +31,7 @@ def prim(G, limits, len):
         heapq.heappush(heap, edge)
     touched[1] = 1
 
-    while(num_touched < len):
+    while(edges_used < len-1):
         # print("Current heap 2", heap)
         if heap == []:
             for i in range(1, len+1): #this limit could be problematic
@@ -39,7 +39,6 @@ def prim(G, limits, len):
                     # print("here", i)
                     looking = True
                     touched[i] = 1
-                    num_touched += 1
                     for edge in G[i]:
                         heapq.heappush(heap, edge)
                     break
@@ -51,15 +50,15 @@ def prim(G, limits, len):
         # print("Have visited", touched)
         # print("Used edges", used)
         # print("Limit counts", limits)
+        # print("Looking", looking)
         # print(touched[pop[1]], not limits[pop[1]])
         if touched[pop[1]]:
+            # print("here in looking")
             if looking:
                 looking = False
             else: continue
-        
-        if not limits[pop[1]] or not limits[pop[2]]:
+        elif not limits[pop[1]] or not limits[pop[2]]:
             continue
-        num_touched += 1
         touched[pop[1]] = 1
         cost += pop[0]
         limits[pop[1]] -= 1
@@ -67,6 +66,7 @@ def prim(G, limits, len):
         for edge in G[pop[1]]:
             heapq.heappush(heap, edge)
         used.append(pop[3])
+        edges_used += 1
 
     return sorted(used), cost
 
