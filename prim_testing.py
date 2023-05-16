@@ -13,7 +13,7 @@ Output: One line with a single integer, the minimum cost for the entire network.
 from collections import defaultdict
 import heapq
 
-def prim(G, len):
+def prim(G, limits, len):
 
     touched = {}
     for key in G:
@@ -25,14 +25,21 @@ def prim(G, len):
     for edge in G[1]:
         heapq.heappush(heap, edge)
     touched[1] = 1
+    limits[1] -= 1
 
     while(num_touched < len):
         pop = heapq.heappop(heap)
-        if touched[pop[1]]:
+        print("\nCurrent node", pop)
+        print("Current heap", heap)
+        print("Current cost", cost)
+        print("Have visited", touched)
+        print("Limit counts", limits)
+        if touched[pop[1]] or not limits[pop[1]]:
             continue
         num_touched += 1
         touched[pop[1]] = 1
         cost += pop[0]
+        limits[pop[1]] -= 1
         for edge in G[pop[1]]:
             heapq.heappush(heap, edge)
 
@@ -42,7 +49,7 @@ def prim(G, len):
 
 def solve(N, M, limits, edges):
   
-  mst1 = prim(edges,N)
+  mst1 = prim(edges,limits,N)
 
 #   print(mst1, mst2)
 
@@ -52,6 +59,7 @@ def solve(N, M, limits, edges):
 def read_input():
     N, M = [int(i) for i in input().split()]
     limits = [int(input()) for _ in range(N)]
+    limits.insert(0, None)
     edges = defaultdict(list)
     for i in range(M):
         u, v, c = [int(i) for i in input().split()]
