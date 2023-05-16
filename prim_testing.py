@@ -15,30 +15,49 @@ import heapq
 
 def prim(G, limits, len):
 
+    # print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
+
     touched = {}
     for key in G:
         touched[key] = 0
     num_touched = 1
     heap = []
     cost = 0
+    looking = False
 
     used = []
             
     for edge in G[1]:
         heapq.heappush(heap, edge)
     touched[1] = 1
-    prev = 1
 
     while(num_touched < len):
         # print("Current heap 2", heap)
+        if heap == []:
+            for i in range(1, len+1): #this limit could be problematic
+                if not touched[i]:
+                    # print("here", i)
+                    looking = True
+                    touched[i] = 1
+                    num_touched += 1
+                    for edge in G[i]:
+                        heapq.heappush(heap, edge)
+                    break
+            continue
         pop = heapq.heappop(heap)
-        print("\nCurrent node", pop)
-        print("Current heap", heap)
-        print("Current cost", cost)
-        print("Have visited", touched)
-        print("Limit counts", limits)
+        # print("\nCurrent node", pop)
+        # print("Current heap", heap)
+        # print("Current cost", cost)
+        # print("Have visited", touched)
+        # print("Used edges", used)
+        # print("Limit counts", limits)
         # print(touched[pop[1]], not limits[pop[1]])
-        if touched[pop[1]] or not limits[pop[1]] or not limits[pop[2]]:
+        if touched[pop[1]]:
+            if looking:
+                looking = False
+            else: continue
+        
+        if not limits[pop[1]] or not limits[pop[2]]:
             continue
         num_touched += 1
         touched[pop[1]] = 1
@@ -47,7 +66,6 @@ def prim(G, limits, len):
         limits[pop[2]] -= 1
         for edge in G[pop[1]]:
             heapq.heappush(heap, edge)
-        prev = pop[1]
         used.append(pop[3])
 
     return sorted(used), cost
@@ -57,30 +75,30 @@ def solve(N, M, limits, edges):
   
   used, cost = prim(edges,limits,N)
 
-  print(used, cost)
+#   print(used, cost)
 
   return used
 
 
 def read_input():
     N, M = [int(i) for i in input().split()]
-    limits = [int(input()) for _ in range(N)]
-    limits.insert(0, None)
+    limits = {i+1:int(input()) for i in range(N)}
     edges = defaultdict(list)
     for i in range(M):
         u, v, c = [int(i) for i in input().split()]
         # print(u,v,c)
         edges[u].append((c, v, u, i+1))
         edges[v].append((c, u, v, i+1))
-    print(N, M, limits, edges)
+    # print(N, M, limits, edges)
     
     return N, M, limits, edges
 
 
 def main():
     N, M, limits, edges = read_input()
-    cost = solve(N, M, limits, edges)
-    print(cost)
+    used = solve(N, M, limits, edges)
+    for edge in used:
+        print(edge)
 
 
 if __name__ == '__main__':
