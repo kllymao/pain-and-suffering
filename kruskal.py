@@ -9,6 +9,7 @@ def find(index, back_tree):
 
 
 def kruskal(N, M, bounds, edges):
+    # implements kruskal's algorithm with vertex bounds
     frontier = []
     hq.heapify(frontier)
     visited = set([])
