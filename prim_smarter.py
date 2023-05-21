@@ -13,7 +13,7 @@ Output: One line with a single integer, the minimum cost for the entire network.
 from collections import defaultdict
 import heapq
 
-def prim(G, limits, length):
+def prim(G, limits, length, max_lim):
 
     # print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
 
@@ -28,24 +28,27 @@ def prim(G, limits, length):
     edge_store = defaultdict(list)
     used = []
             
-    for edge in G[1]:
+    for edge in G[max_lim[0]]:
         heapq.heappush(heap, edge)
-    touched[1] = 1
+    touched[max_lim[0]] = 1
 
     while(edges_used < length-1):
         # print("edges used", edges_used)
         # print("Current heap 2", heap)
         if heap == []:
             # print(length, edges_used)
+            max_lim = (0,0)
             for i in range(1, length+1): #this limit could be problematic
                 if not touched[i]:
+                    if limits[i] <= max_lim[1]:
+                        continue
+                    max_lim = (i,limits[i])
                     # print("yeah we're not ending up here", i)
                     looking = True
                     touched[i] = 1
                     # limits[i] -= 1
                     for edge in G[i]:
                         heapq.heappush(heap, edge)
-                    break
             # print("yeahhhhh we're done here")
             quit()
             continue
@@ -96,9 +99,9 @@ def prim(G, limits, length):
     return sorted(used), cost
 
 
-def solve(N, M, limits, edges):
+def solve(N, M, limits, edges,max_lim):
   
-  used, cost = prim(edges,limits,N)
+  used, cost = prim(edges,limits,N,max_lim)
 
 #   print(used, cost)
 
@@ -107,7 +110,13 @@ def solve(N, M, limits, edges):
 
 def read_input():
     N, M = [int(i) for i in input().split()]
-    limits = {i+1:int(input()) for i in range(N)}
+    max_lim = (0,0)
+    limits = {}
+    for i in range(N):
+        limits[i+1] = int(input())
+        if limits[i+1] > max_lim[1]:
+            max_lim = (i+1,limits[i+1])
+
     edges = defaultdict(list)
     for i in range(M):
         u, v, c = [int(i) for i in input().split()]
@@ -116,12 +125,12 @@ def read_input():
         edges[v].append((c, u, v, i+1))
     # print(N, M, limits, edges)
     
-    return N, M, limits, edges
+    return N, M, limits, edges, max_lim
 
 
 def main():
-    N, M, limits, edges = read_input()
-    used = solve(N, M, limits, edges)
+    N, M, limits, edges, max_lim = read_input()
+    used = solve(N, M, limits, edges, max_lim)
     for edge in used:
         print(edge)
 
