@@ -37,12 +37,14 @@ def prim(G, limits, length, max_lim):
         # print("Current heap 2", heap)
         if heap == []:
             # print(length, edges_used)
-            max_lim = (0,0)
+            min_lim = (0,-1)
             for i in range(1, length+1): #this limit could be problematic
                 if not touched[i]:
-                    if limits[i] <= max_lim[1]:
+                    if min_lim[1] == -1:
+                        pass
+                    elif limits[i] >= min_lim[1]:
                         continue
-                    max_lim = (i,limits[i])
+                    min_lim = (i,limits[i])
                     # print("yeah we're not ending up here", i)
                     looking = True
                     touched[i] = 1
