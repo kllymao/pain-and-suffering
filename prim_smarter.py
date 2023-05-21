@@ -13,7 +13,7 @@ Output: One line with a single integer, the minimum cost for the entire network.
 from collections import defaultdict
 import heapq
 
-def prim(G, limits, length, min_lim):
+def prim(G, limits, length, max_lim):
 
     # print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
 
@@ -27,24 +27,29 @@ def prim(G, limits, length, min_lim):
 
     edge_store = defaultdict(list)
     used = []
+    # print(max_lim)
             
-    for edge in G[min_lim[0]]:
+    for edge in G[max_lim[0][0]]:
         heapq.heappush(heap, edge)
-    touched[min_lim[0]] = 1
+    for edge in G[max_lim[1][0]]:
+        heapq.heappush(heap, edge)
+    # print(max_lim[0][0], max_lim[1][0])
+    # exit()
+    touched[max_lim[0][0]] = 1
+    touched[max_lim[1][0]] = 1
+    looking = True
 
     while(edges_used < length-1):
         # print("edges used", edges_used)
         # print("Current heap 2", heap)
         if heap == []:
             # print(length, edges_used)
-            min_lim = (0,-1)
+            max_lim = (0,0)
             for i in range(1, length+1): #this limit could be problematic
                 if not touched[i]:
-                    if min_lim[1] == -1:
-                        pass
-                    elif limits[i] >= min_lim[1]:
+                    if limits[i] <= max_lim[1]:
                         continue
-                    min_lim = (i,limits[i])
+                    max_lim = (i,limits[i])
                     # print("yeah we're not ending up here", i)
                     looking = True
                     touched[i] = 1
@@ -55,15 +60,15 @@ def prim(G, limits, length, min_lim):
             quit()
             continue
         pop = heapq.heappop(heap)
-        # print("\nCurrent node", pop)
-        # print("Current heap", heap)
-        # print("heap length", len(heap))
-        # print("Current cost", cost)
-        # print("Have visited", touched)
-        # print("Used edges", used)
-        # print("Limit counts", limits)
-        # print("Looking", looking)
-        # print(touched[pop[1]], not limits[pop[1]])
+        print("\nCurrent node", pop)
+        print("Current heap", heap)
+        print("heap length", len(heap))
+        print("Current cost", cost)
+        print("Have visited", touched)
+        print("Used edges", used)
+        print("Limit counts", limits)
+        print("Looking", looking)
+        print(touched[pop[1]], not limits[pop[1]])
         if touched[pop[1]]:
             # print("here3")
             # print("here in looking")
@@ -101,9 +106,9 @@ def prim(G, limits, length, min_lim):
     return sorted(used), cost
 
 
-def solve(N, M, limits, edges,min_lim):
+def solve(N, M, limits, edges,max_lim):
   
-  used, cost = prim(edges,limits,N,min_lim)
+  used, cost = prim(edges,limits,N,max_lim)
 
 #   print(used, cost)
 
@@ -112,12 +117,16 @@ def solve(N, M, limits, edges,min_lim):
 
 def read_input():
     N, M = [int(i) for i in input().split()]
-    min_lim = (0,-1)
+    max_lim = [(0,0), (0,0)]
     limits = {}
     for i in range(N):
         limits[i+1] = int(input())
-        if min_lim[1] == -1 or limits[i+1] < min_lim[1]:
-            min_lim = (i+1,limits[i+1])
+        if limits[i+1] > max_lim[0][1]:
+            max_lim[1] = max_lim[0]
+            max_lim[0] = (i+1,limits[i+1])
+        elif limits[i+1] > max_lim[1][1]:
+            max_lim[1] = (i+1,limits[i+1])
+        # print(max_lim)
 
     edges = defaultdict(list)
     for i in range(M):
@@ -127,12 +136,12 @@ def read_input():
         edges[v].append((c, u, v, i+1))
     # print(N, M, limits, edges)
     
-    return N, M, limits, edges, min_lim
+    return N, M, limits, edges, max_lim
 
 
 def main():
-    N, M, limits, edges, min_lim = read_input()
-    used = solve(N, M, limits, edges, min_lim)
+    N, M, limits, edges, max_lim = read_input()
+    used = solve(N, M, limits, edges, max_lim)
     for edge in used:
         print(edge)
 
