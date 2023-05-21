@@ -13,7 +13,7 @@ Output: One line with a single integer, the minimum cost for the entire network.
 from collections import defaultdict
 import heapq
 
-def prim(G, limits, length, max_lim):
+def prim(G, limits, length, min_lim):
 
     # print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
 
@@ -28,9 +28,9 @@ def prim(G, limits, length, max_lim):
     edge_store = defaultdict(list)
     used = []
             
-    for edge in G[max_lim[0]]:
+    for edge in G[min_lim[0]]:
         heapq.heappush(heap, edge)
-    touched[max_lim[0]] = 1
+    touched[min_lim[0]] = 1
 
     while(edges_used < length-1):
         # print("edges used", edges_used)
@@ -101,9 +101,9 @@ def prim(G, limits, length, max_lim):
     return sorted(used), cost
 
 
-def solve(N, M, limits, edges,max_lim):
+def solve(N, M, limits, edges,min_lim):
   
-  used, cost = prim(edges,limits,N,max_lim)
+  used, cost = prim(edges,limits,N,min_lim)
 
 #   print(used, cost)
 
@@ -112,12 +112,12 @@ def solve(N, M, limits, edges,max_lim):
 
 def read_input():
     N, M = [int(i) for i in input().split()]
-    max_lim = (0,0)
+    min_lim = (0,-1)
     limits = {}
     for i in range(N):
         limits[i+1] = int(input())
-        if limits[i+1] > max_lim[1]:
-            max_lim = (i+1,limits[i+1])
+        if min_lim[1] == -1 or limits[i+1] < min_lim[1]:
+            min_lim = (i+1,limits[i+1])
 
     edges = defaultdict(list)
     for i in range(M):
@@ -127,12 +127,12 @@ def read_input():
         edges[v].append((c, u, v, i+1))
     # print(N, M, limits, edges)
     
-    return N, M, limits, edges, max_lim
+    return N, M, limits, edges, min_lim
 
 
 def main():
-    N, M, limits, edges, max_lim = read_input()
-    used = solve(N, M, limits, edges, max_lim)
+    N, M, limits, edges, min_lim = read_input()
+    used = solve(N, M, limits, edges, min_lim)
     for edge in used:
         print(edge)
 
