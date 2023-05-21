@@ -13,7 +13,7 @@ Output: One line with a single integer, the minimum cost for the entire network.
 from collections import defaultdict
 import heapq
 
-def prim(G, limits, len):
+def prim(G, limits, length):
 
     # print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
 
@@ -32,23 +32,27 @@ def prim(G, limits, len):
         heapq.heappush(heap, edge)
     touched[1] = 1
 
-    while(edges_used < len-1):
+    while(edges_used < length-1):
         # print("edges used", edges_used)
         # print("Current heap 2", heap)
         if heap == []:
-            for i in range(1, len+1): #this limit could be problematic
+            print(length, edges_used)
+            for i in range(1, length+1): #this limit could be problematic
                 if not touched[i]:
-                    # print("here", i)
+                    print("yeah we're not ending up here", i)
                     looking = True
                     touched[i] = 1
                     # limits[i] -= 1
                     for edge in G[i]:
                         heapq.heappush(heap, edge)
                     break
+            print("yeahhhhh we're done here")
+            quit()
             continue
         pop = heapq.heappop(heap)
         # print("\nCurrent node", pop)
         # print("Current heap", heap)
+        print("heap length", len(heap))
         # print("Current cost", cost)
         # print("Have visited", touched)
         # print("Used edges", used)
@@ -56,9 +60,11 @@ def prim(G, limits, len):
         # print("Looking", looking)
         # print(touched[pop[1]], not limits[pop[1]])
         if touched[pop[1]]:
+            print("here3")
             # print("here in looking")
             if looking:
                 looking = False
+                print("here4")
                 # print("\n\n\n\n\n\n\n\nHERE, limit is",limits[pop[1]])
                 if not limits[pop[1]]:
                     # break edge
@@ -68,11 +74,12 @@ def prim(G, limits, len):
                     limits[v] += 1
                     used.remove(e)
                     edge_store[pop[1]].pop(0)
-                    for edge in G[pop[1]]:
-                        # maybe check if edge used
-                        heapq.heappush(heap, edge)
+                    # for edge in G[pop[1]]:
+                    #     # maybe check if edge used
+                    #     heapq.heappush(heap, edge)
             else: continue
         if not limits[pop[1]] or not limits[pop[2]]:
+            print("here2")
             continue
         touched[pop[1]] = 1 # this could be an else condition
         cost += pop[0]
@@ -84,6 +91,7 @@ def prim(G, limits, len):
         edge_store[pop[2]].append(pop)
         used.append(pop[3])
         edges_used += 1
+        print("here")
 
     return sorted(used), cost
 

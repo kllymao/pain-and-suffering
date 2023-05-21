@@ -15,7 +15,7 @@ import heapq
 
 def prim(G, limits, len):
 
-    print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
+    # print("\n\n\n\nHELLO YES THE ALGORITHM IS STARTING\n\n\n\n\n\n")
 
     edges_used = 0
     touched = {}
@@ -45,13 +45,13 @@ def prim(G, limits, len):
                     break
             continue
         pop = heapq.heappop(heap)
-        print("\nCurrent node", pop)
-        print("Current heap", heap)
-        print("Current cost", cost)
-        print("Have visited", touched)
-        print("Used edges", used)
-        print("Limit counts", limits)
-        print("Looking", looking)
+        # print("\nCurrent node", pop)
+        # print("Current heap", heap)
+        # print("Current cost", cost)
+        # print("Have visited", touched)
+        # print("Used edges", used)
+        # print("Limit counts", limits)
+        # print("Looking", looking)
         # print(touched[pop[1]], not limits[pop[1]])
         if touched[pop[1]]:
             # print("here in looking")
