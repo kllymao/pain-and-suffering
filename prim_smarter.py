@@ -110,15 +110,12 @@ def solve(N, M, limits, edges,max_lim):
 
 def read_input():
     N, M = [int(i) for i in input().split()]
-    max_lim = [(0,0), (0,0)]
+    max_lim = (0,0)
     limits = {}
     for i in range(N):
         limits[i+1] = int(input())
-        if limits[i+1] > max_lim[0][1]:
-            max_lim[1] = max_lim[0]
-            max_lim[0] = (i+1,limits[i+1])
-        elif limits[i+1] > max_lim[1][1]:
-            max_lim[1] = (i+1,limits[i+1])
+        if limits[i+1] > max_lim[1]:
+            max_lim = (i+1,limits[i+1])
 
     edges = defaultdict(list)
     for i in range(M):
@@ -128,7 +125,7 @@ def read_input():
         edges[v].append((c, u, v, i+1))
     # print(N, M, limits, edges)
     
-    return N, M, limits, edges, max_lim[1]
+    return N, M, limits, edges, max_lim
 
 
 def main():
