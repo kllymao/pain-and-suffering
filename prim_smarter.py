@@ -19,30 +19,18 @@ def prim(G, limits, length, max_lim):
 
     edges_used = 0
     touched = {}
-    tree_num = {}
     for key in G:
         touched[key] = 0
-        tree_num[key] = 0
     heap = []
     cost = 0
     looking = False
 
     edge_store = defaultdict(list)
     used = []
-    # print(max_lim)
             
-    for edge in G[max_lim[0][0]]:
+    for edge in G[max_lim[0]]:
         heapq.heappush(heap, edge)
-    for edge in G[max_lim[1][0]]:
-        heapq.heappush(heap, edge)
-    # print(max_lim[0][0], max_lim[1][0])
-    # exit()
-    touched[max_lim[0][0]] = 1
-    tree_num[max_lim[0][0]] = 0
-    touched[max_lim[1][0]] = 1
-    tree_num[max_lim[1][0]] = 1
-    looking = True
-    bridging = False
+    touched[max_lim[0]] = 1
 
     while(edges_used < length-1):
         # print("edges used", edges_used)
@@ -71,28 +59,20 @@ def prim(G, limits, length, max_lim):
         # print("Current cost", cost)
         # print("Have visited", touched)
         # print("Used edges", used)
-        # # print("Edge store", edge_store)
         # print("Limit counts", limits)
         # print("Looking", looking)
         # print(touched[pop[1]], not limits[pop[1]])
-        if pop[3] in used:
-            continue
         if touched[pop[1]]:
             # print("here3")
             # print("here in looking")
             if looking:
-                if tree_num[pop[1]] == tree_num[pop[2]]: # if there is remarkable inefficiency the tree_num reset could be changed
-                    continue
                 looking = False
-                bridging = True
                 # print("here4")
                 # print("\n\n\n\n\n\n\n\nHERE, limit is",limits[pop[1]])
                 if not limits[pop[1]]:
                     # break edge
-                    # print(pop[1], edge_store[pop[1]][0])
                     w,u,v,e, = edge_store[pop[1]][0]
-                    print("BREAKING", edge_store[pop[1]][0])
-                    # exit()
+                    # print("BREAKING", u,v,e)
                     limits[u] += 1
                     limits[v] += 1
                     used.remove(e)
@@ -114,17 +94,6 @@ def prim(G, limits, length, max_lim):
         edge_store[pop[2]].append(pop)
         used.append(pop[3])
         edges_used += 1
-
-        if bridging:
-            tree_num[pop[1]] = 0 
-            for k,v in tree_num.items():
-                if v == 1:
-                    tree_num[k] = 0
-            bridging = False
-        else:
-            tree_num[pop[1]] = tree_num[pop[2]]
-
-        print("CONNECTING", pop)
         # print("here")
 
     return sorted(used), cost
@@ -150,7 +119,6 @@ def read_input():
             max_lim[0] = (i+1,limits[i+1])
         elif limits[i+1] > max_lim[1][1]:
             max_lim[1] = (i+1,limits[i+1])
-        # print(max_lim)
 
     edges = defaultdict(list)
     for i in range(M):
@@ -160,7 +128,7 @@ def read_input():
         edges[v].append((c, u, v, i+1))
     # print(N, M, limits, edges)
     
-    return N, M, limits, edges, max_lim
+    return N, M, limits, edges, max_lim[1]
 
 
 def main():
