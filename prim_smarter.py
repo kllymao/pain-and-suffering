@@ -109,15 +109,33 @@ def read_input():
         if limits[i+1] > max_lim[1]:
             max_lim = (i+1,limits[i+1])
 
+    edge_count = {}
+    for i in range(N):
+        edge_count[i+1] = 0
+
     edges = defaultdict(list)
     for i in range(M):
         u, v, c = [int(i) for i in input().split()]
         # print(u,v,c)
         edges[u].append((c, v, u, i+1))
         edges[v].append((c, u, v, i+1))
+        edge_count[u] += 1
+        edge_count[v] += 1
     # print(N, M, limits, edges)
+
+    max_ratio = (0,0)
+
+    for i in range(1,N):
+        ratio = edge_count[i] * limits[i]
+        # print(ratio)
+        if ratio > max_ratio[1]:
+            max_ratio = (i,ratio)
+
+    # print(max_ratio)
+
+
     
-    return N, M, limits, edges, max_lim
+    return N, M, limits, edges, max_ratio
 
 
 def main():
